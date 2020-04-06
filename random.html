@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/jutils-src"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- 1. 导入Vue的包 -->
+  <script src="vue-2.4.0.js"></script>
+
+
+
+</head>
+
+<body>
+
+  <!-- 将来 new 的Vue实例，会控制这个 元素中的所有内容 -->
+  <!-- Vue 实例所控制的这个元素区域，就是我们的 V  -->
+  <div id="app">
+
+    <!-- <span>{{ msg }}</span> --- <span>{{order}}</span> <span>{{value}}</span> -->
+
+
+    <div class="container">
+      <input type="text" v-model:value="stroename">
+      <input type="text" v-model:value="storelocal_money[0]">
+      <input type="text" v-model:value="storelocal_money[1]">
+      <button type="submit" class="btn btn-danger" v-on:click="streoMoney">moneyIndex</button>
+
+      <button type="submit" class="btn btn-danger" v-on:click="storetolocal">保存数据</button>
+      <button type="submit" class="btn btn-danger" v-on:click="getstrorelocal">读取数据 </button>
+      <button type="submit" class="btn btn-danger" v-on:click="compData">对比数据</button>
+      <div class="row" v-for="(item,i) in list">
+        <div class="col-xs-1"><span><input type="checkbox" value=""></span></div>
+        <div class="col-xs-1"><span>{{item[0]}}</span></div>
+        <div class="col-xs-1"><span>{{item[1]}}</span></div>
+        <div class="col-xs-2"><span>{{item[4]}}</span></div>
+        <div class="col-xs-3"><span>{{item[2]}}</span></div>
+        <div class="col-xs-2"><span>{{item[3]}}</span></div>
+
+        <div class="col-xs-2">
+          <label> <input type="checkbox" value="" :checked="item[5] ==0?false:true">
+            Right
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-danger" v-on:click="readfile">提交</button>
+    </div>
+
+
+
+  </div>
+
+  <script>
+    // 2. 创建一个Vue的实例
+    // 当我们导入包之后，在浏览器的内存中，就多了一个 Vue 构造函数
+    //  注意：我们 new 出来的这个 vm 对象，就是我们 MVVM中的 VM调度者
+
+    var min = 1;
+    var max = 10;
+    let list2 = [];
+
+
+    var vm = new Vue({
+      el: '#app',  // 表示，当前我们 new 的这个 Vue 实例，要控制页面上的哪个区域
+      // 这里的 data 就是 MVVM中的 M，专门用来保存 每个页面的数据的
+      data: { // data 属性中，存放的是 el 中要用到的数据
+        msg: 'five minument',// 通过 Vue 提供的指令，很方便的就能把数据渲染到页面上，程序员不再手动操作DOM元素了【前端的Vue之类的框架，不提倡我们去手动操作DOM元素了】
+        msg2: 'hello vue .this is data object of ',
+        order: 0,
+        value: 0,
+        stroename: "ll1",
+        storelocal_money: [0, 0, 0],
+        list: [
+
+        ],
+        // arr:[]
+      },
+      methods: {
+        streoMoney() {
+          this.storelocal_money[2] = (parseInt(this.storelocal_money[0]) + parseInt(this.storelocal_money[1]));
+          localStorage.setItem(this.stroename, JSON.stringify(this.storelocal_money));
+        },
+        compData() {
+          this.list.forEach(ele => {
+            if (ele[1] == ele[4]) {
+              this.$set(ele, 5, 1);
+              console.log("comdataed.")
+            }
+          })
+        },
+        storetolocal() {
+          localStorage.setItem(this.stroename, JSON.stringify(this.list));
+        },
+        getstrorelocal() {
+          this.list = JSON.parse(localStorage.getItem(this.stroename));
+        },
+        get() {
+          let arr = [];
+          let now = new Date();
+          let hour = now.getHours();
+          let minu = now.getMinutes();
+          let num = hour > 4  ? (hour - 13) * 12 + parseInt((minu +1) / 5) : (hour) * 12 + parseInt((minu +1)/ 5) + 132;
+          // num =num - ;
+          this.order++;
+          if (this.order == 11) this.order = 1;
+          this.value = Math.floor(Math.random() * (max - min + 1)) + min;
+          // console.log(this.value);
+          arr[0] = this.order;
+          arr[1] = this.value;
+          arr[2] = jutils.formatDate(new Date(), "YYYY-MM-DD HH:ii:ss");
+          arr[3] = num;
+          arr[4] = 0;
+          arr[5] = 0;
+          this.list.push(arr);
+          
+          // if(arr[3])
+          // list2.push(this.arr);
+          // console.log(this.list)
+        },
+        getLocalTime() {
+          //  let time =new Date();
+          //  jutils.formatDate(new Date(1533686888*1000),"YYYY-MM-DD HH:ii:ss");
+        },
+        spreadwork() {
+          var spread = new GC.Spread.Sheets.Workbook(document.getElementById('ss'));
+          var excelIo = new GC.Spread.Excel.IO();
+        },
+        readfile() {
+          console.log("hel")
+          let _this = this;
+          axios.get('http://localhost:3060/readsome')
+            .then(function (response) {
+
+              let mydata = response.data.data1;
+
+
+              let p_index = -1;
+              mydata.forEach((element, index, mydata) => {
+                // console.log(_this.list)
+                if (_this.list[0][3] == element[1]) {
+                  p_index = index;
+                  console.log(mydata[index][1])
+                  // console.log(mydata[index][1])
+                  console.log(response.data.data1[index])
+
+                }
+
+              });//找位置
+
+              if (p_index != -1) {
+                _this.list.forEach((ele, index) => {
+                  // ele[4] = mydata[p_index++][ele[0]+1];
+                  if(mydata[p_index] !=undefined)
+                    _this.$set(ele, 4, mydata[p_index--][ele[0] + 1]);
+                })
+              }else {
+                _this.list.forEach((ele, index) => {
+                  // ele[4] = mydata[p_index++][ele[0]+1];
+                  _this.$set(ele, 4, 0);
+                })
+              }
+
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          _this.compData();
+        }
+      },
+      mounted() {
+
+        this.timer = setInterval(this.get, 1000 * 300);
+        this.get();
+        // this.spreadwork();
+        console.log(jutils.formatDate(new Date(), "YYYY-MM-DD HH:ii:ss"))
+      }
+
+
+    })
+  </script>
+</body>
+
+</html>
