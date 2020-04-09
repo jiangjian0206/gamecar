@@ -10,9 +10,12 @@
   <script src="https://cdn.jsdelivr.net/npm/jutils-src"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- 1. 导入Vue的包 -->
-  <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+  <script src="vue-2.4.0.js"></script>
 
-
+  <style>
+    /* .cb_index {left: 30px;padding: 6px;} */
+    .guess { display: inline-block;width: 20px;}
+  </style>
 
 </head>
 
@@ -23,7 +26,6 @@
   <div id="app">
 
     <!-- <span>{{ msg }}</span> --- <span>{{order}}</span> <span>{{value}}</span> -->
-
 
     <div class="container">
       <input type="text" v-model:value="stroename">
@@ -37,10 +39,15 @@
       <div class="row" v-for="(item,i) in list">
         <div class="col-xs-1"><span><input type="checkbox" value=""></span></div>
         <div class="col-xs-1"><span>{{item[0]}}</span></div>
-        <div class="col-xs-1"><span>{{item[1]}}</span></div>
-        <div class="col-xs-2"><span>{{item[4]}}</span></div>
-        <div class="col-xs-3"><span>{{item[2]}}</span></div>
-        <div class="col-xs-2"><span>{{item[3]}}</span></div>
+        <div class="col-xs-1"><div class="guess" >{{item[1]}}</div><span class="cb_index"><input type="checkbox" value=""></span></div>
+        <div class="col-xs-1"><div class="guess" >{{item[6]}}</div><span class="cb_index"><input type="checkbox" value=""></span></div>
+        <div class="col-xs-1"><div class="guess" style="color:red;">{{item[7]}}</div><span class="cb_index"><input type="checkbox" value=""></span></div>
+        <div class="col-xs-1"><div class="guess" >{{item[8]}}</div><span class="cb_index"><input type="checkbox" value=""></span></div>
+        <div class="col-xs-1"><div class="guess" >{{item[9]}}</div><span class="cb_index"><input type="checkbox" value=""></span></div>
+
+        <div class="col-xs-1"><span>{{item[4]}}</span></div>
+        <div class="col-xs-1"><span>{{item[2]}}</span></div>
+        <div class="col-xs-1"><span>{{item[3]}}</span></div>
 
         <div class="col-xs-2">
           <label> <input type="checkbox" value="" :checked="item[5] ==0?false:true">
@@ -110,12 +117,18 @@
           if (this.order == 11) this.order = 1;
           this.value = Math.floor(Math.random() * (max - min + 1)) + min;
           // console.log(this.value);
-          arr[0] = this.order;
+          //0       1           2         3     4          5     6         7          8         9  
+          //排序号   预测号码   开奖时间    期号  实际号码   标记    预测2  预测3     预测4        预测5
+          arr[0] = this.order; 
           arr[1] = this.value;
-          arr[2] = jutils.formatDate(new Date(), "YYYY-MM-DD HH:ii:ss");
+          arr[2] = jutils.formatDate(new Date(), " HH:ii:ss");
           arr[3] = num;
           arr[4] = 0;
           arr[5] = 0;
+          arr[6] = Math.floor(Math.random() * (max - min + 1)) + min;
+          arr[7] = Math.floor(Math.random() * (max - min + 1)) + min;
+          arr[8] = Math.floor(Math.random() * (max - min + 1)) + min;
+          arr[9] = Math.floor(Math.random() * (max - min + 1)) + min;
           this.list.push(arr);
           
           // if(arr[3])
